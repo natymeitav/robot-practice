@@ -28,6 +28,23 @@ public class Drivetrain extends SubsystemBase {
         mainL.set(ControlMode.PercentOutput, power);
     }
 
+    public double getRightPos(){
+        /*
+        * param: ---
+        * return: right wheel's position.
+        */
+        return unitModel.toUnits(mainR.getSelectedSensorPosition());
+    }
+
+
+    public double getLeftPos(){
+        /*
+         * param: --
+         * return: left wheel's position.
+         */
+        return unitModel.toUnits(mainL.getSelectedSensorPosition());
+    }
+
 
     @Override
     public void periodic() {
