@@ -4,6 +4,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import frc.robot.Ports;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.subsystems.UnitModel;
 
 public class Drivetrain extends SubsystemBase {
     public TalonFX mainR = new TalonFX(Ports.DriveTrain.mainR);
@@ -12,6 +13,7 @@ public class Drivetrain extends SubsystemBase {
     public TalonFX mainL = new TalonFX(Ports.DriveTrain.mainL);
     public TalonFX sideL = new TalonFX(Ports.DriveTrain.sideL);
 
+    UnitModel unitModel = new UnitModel(2048. * (2000 / 216.) / (6 * 0.0254 * Math.PI));
     public Drivetrain() {
         sideR.follow(mainR);
         mainR.setInverted(Ports.DriveTrain.invertedR);
