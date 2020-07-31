@@ -8,10 +8,14 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.ExampleSubsystem.ExampleSubsystem;
-import frc.robot.subsystems.ExampleSubsystem.commands.ExampleCommand;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.subsystems.drivetrain.Drivetrain;
+import frc.robot.subsystems.Intake.Intake;
+import frc.robot.subsystems.Intake.commands.Chop;
+import frc.robot.subsystems.Intake.commands.EatCommand;
 
 /**
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -21,9 +25,16 @@ import frc.robot.subsystems.ExampleSubsystem.commands.ExampleCommand;
  */
 public class RobotContainer {
   public Intake intake = new Intake();
+  public Drivetrain driveTrain = new Drivetrain();
+
+  //not sure these are the actual ports
+  public Joystick rightS = new Joystick(2);
+  public Joystick leftS = new Joystick(3);
+
   public XboxController Xbox = new XboxController(1);
   public JoystickButton a = new JoystickButton(Xbox, XboxController.Button.kA.value);
   public JoystickButton b = new JoystickButton(Xbox, XboxController.Button.kB.value);
+  public JoystickButton x = new JoystickButton(Xbox, XboxController.Button.kX.value);
   // The robot's subsystems and commands are defined here...
 
 
@@ -33,24 +44,26 @@ public class RobotContainer {
   public RobotContainer() {
     // Configure the button bindings
     configureButtonBindings();
+
   }
 
   /**
-   * Use this method to define your button->command mappings.  Buttons can be created by
+   * Use this method to define your button->commands mappings.  Buttons can be created by
    * instantiating a {@link GenericHID} or one of its subclasses ({@link
    * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a
    * {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
     a.whileHeld(new EatCommand(intake, 0.5));
-    b.whenPressed(new Chomp(Intake, Intake.state.OPEN))
+    b.whenPressed(new Chop(intake, Intake.state.OPEN));
+    
   }
 
 
   /**
-   * Use this to pass the autonomous command to the main {@link Robot} class.
+   * Use this to pass the autonomous commands to the main {@link Robot} class.
    *
-   * @return the command to run in autonomous
+   * @return the commands to run in autonomous
    */
   public Command getAutonomousCommand() {
 
