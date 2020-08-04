@@ -57,7 +57,7 @@ public class RobotContainer {
   private void configureButtonBindings() {
     a.whileHeld(new EatCommand(intake, 0.5));
     b.whenPressed(new Chop(intake, Intake.state.OPEN));
-    x.whenPressed(new Distance(driveTrain, 100));
+    x.whenPressed(new Distance(driveTrain, 1));
     
   }
 

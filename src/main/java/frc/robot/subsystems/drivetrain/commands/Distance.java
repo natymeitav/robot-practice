@@ -3,41 +3,41 @@ package frc.robot.subsystems.drivetrain.commands;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.drivetrain.Drivetrain;
-import frc.robot.Constants.PID;
+
 
 public class Distance extends CommandBase {
 
     private final Drivetrain drivetrain;
     private double setpoint;
 
-    private double distanceL;
-    private double integL;
-    private double errorL;
-    private double velL;
     private double powerL;
 
-    private double distanceR;
-    private double integR;
-    private double errorR;
-    private double velR;
     private double powerR;
+
+
+
 
     public Distance(Drivetrain drivetrain , double setPoint){
         this.drivetrain = drivetrain;
         this.setpoint = setPoint;
 
-        this.distanceL = drivetrain.getLeftPos();
-        this.errorL = setPoint - distanceL;
-        this.integL = 0;
-        this.velL = 0;
         this.powerL = 0;
-
-        this.distanceR = drivetrain.getLeftPos();
-        this.errorR = setPoint - distanceL;
-        this.integR = 0;
-        this.velR = 0;
         this.powerR = 0;
 
+    }
+
+    private double getError(boolean side){
+        if (side)//right
+            return setpoint - drivetrain.getLeftPos();
+        else //left
+            return setpoint - drivetrain.getRightPos();
+    }
+
+    private double getIntegral(boolean side){
+        if (side)//right
+            return drivetrain.getRightPos()*Constants.Drivetrain.time;
+        else //left
+            return drivetrain.getLeftPos()*Constants.Drivetrain.time;
     }
 
     @Override
@@ -51,22 +51,12 @@ public class Distance extends CommandBase {
     @Override
     public void execute() {
 
-        integL += drivetrain.getLeftPos()*0.02;// update integral (left)
-        velL = drivetrain.getLeftVel();//update velocity (left)
-        powerL = errorL * Constants.Drivetrain.KP + integL* Constants.Drivetrain.KI + velL* Constants.Drivetrain.KD;//calc optimal power (left)
+        powerL = getError(false) * Constants.Drivetrain.KP +  getIntegral(false)* Constants.Drivetrain.KI + drivetrain.getLeftVel()* Constants.Drivetrain.KD;//calc optimal power (left)
 
-        integR += drivetrain.getRightPos()*0.02;// update integral (right)
-        velR = drivetrain.getRightVel();//update velocity (right)
-        powerR = errorR * Constants.Drivetrain.KP + integR* Constants.Drivetrain.KI + velR* Constants.Drivetrain.KD;// calc optimal power (right)
+        powerR = getError(true) * Constants.Drivetrain.KP + getIntegral(true)* Constants.Drivetrain.KI + drivetrain.getRightVel()* Constants.Drivetrain.KD;// calc optimal power (right)
 
         drivetrain.setPowerL(powerL);//update power (left)
         drivetrain.setPowerR(powerR);//update power (right)
-
-        distanceL = drivetrain.getLeftPos();///update distance (left)
-        errorL = setpoint - distanceL;//update error (left)
-
-        distanceR = drivetrain.getLeftPos();//update distance (right)
-        errorR = setpoint - distanceR;//update error (right)
     }
 
     @Override
@@ -78,7 +68,8 @@ public class Distance extends CommandBase {
     @Override
 
     public boolean isFinished() {
-        return (-10>errorR || errorR> 10) || (-10>errorL || errorL> 10);//robot not in setpoint
+        return (-0.1< getError(true)  && getError(true) < 0.1) && (-0.1<getError(false) || getError(false)< 0.1);//robot not in setpoint
+
     }
 }
 
