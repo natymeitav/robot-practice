@@ -8,7 +8,7 @@ import frc.robot.Constants.PID;
 public class Distance extends CommandBase {
 
     private final Drivetrain drivetrain;
-    private double setPoint;
+    private double setpoint;
 
     private double distanceL;
     private double integL;
@@ -24,7 +24,7 @@ public class Distance extends CommandBase {
 
     public Distance(Drivetrain drivetrain , double setPoint){
         this.drivetrain = drivetrain;
-        this.setPoint = setPoint;
+        this.setpoint = setPoint;
 
         this.distanceL = drivetrain.getLeftPos();
         this.errorL = setPoint - distanceL;
@@ -42,39 +42,43 @@ public class Distance extends CommandBase {
 
     @Override
     public void initialize() {
+        //start in low speed
         drivetrain.setPowerL(0.3);
         drivetrain.setPowerR(0.3);
     }
 
+    //the actual PID
     @Override
     public void execute() {
-        integL += drivetrain.getLeftPos()*0.02;
-        velL = drivetrain.getLeftVel();
-        powerL = errorL * PID.Kp + integL*PID.Ki + velL* PID.Kd;
 
-        integR += drivetrain.getRightPos()*0.02;
-        velR = drivetrain.getRightVel();
-        powerR = errorR * PID.Kp + integR*PID.Ki + velR* PID.Kd;
+        integL += drivetrain.getLeftPos()*0.02;// update integral (left)
+        velL = drivetrain.getLeftVel();//update velocity (left)
+        powerL = errorL * PID.Kp + integL*PID.Ki + velL* PID.Kd;//calc optimal power (left)
 
-        drivetrain.setPowerL(powerL);
-        drivetrain.setPowerR(powerR);
+        integR += drivetrain.getRightPos()*0.02;// update integral (right)
+        velR = drivetrain.getRightVel();//update velocity (right)
+        powerR = errorR * PID.Kp + integR*PID.Ki + velR* PID.Kd;// calc optimal power (right)
 
-        distanceL = drivetrain.getLeftPos();
-        errorL = setPoint - distanceL;
+        drivetrain.setPowerL(powerL);//update power (left)
+        drivetrain.setPowerR(powerR);//update power (right)
 
-        distanceR = drivetrain.getLeftPos();
-        errorR = setPoint - distanceR;
+        distanceL = drivetrain.getLeftPos();///update distance (left)
+        errorL = setpoint - distanceL;//update error (left)
+
+        distanceR = drivetrain.getLeftPos();//update distance (right)
+        errorR = setpoint - distanceR;//update error (right)
     }
 
     @Override
     public void end(boolean interrupted) {
-        drivetrain.setPowerL(0);
-        drivetrain.setPowerR(0);
+        drivetrain.setPowerL(0);//stop left engine
+        drivetrain.setPowerR(0);//stop right engine
     }
 
     @Override
+
     public boolean isFinished() {
-        return (-10<errorR && errorR< 10)  && (-10<errorL && errorL< 10);
+        return (-10>errorR || errorR> 10) || (-10>errorL || errorL> 10);//robot not in setpoint
     }
 }
 
