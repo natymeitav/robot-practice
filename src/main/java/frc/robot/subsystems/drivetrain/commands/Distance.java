@@ -53,11 +53,11 @@ public class Distance extends CommandBase {
 
         integL += drivetrain.getLeftPos()*0.02;// update integral (left)
         velL = drivetrain.getLeftVel();//update velocity (left)
-        powerL = errorL * PID.Kp + integL*PID.Ki + velL* PID.Kd;//calc optimal power (left)
+        powerL = errorL * Constants.Drivetrain.KP + integL* Constants.Drivetrain.KI + velL* Constants.Drivetrain.KD;//calc optimal power (left)
 
         integR += drivetrain.getRightPos()*0.02;// update integral (right)
         velR = drivetrain.getRightVel();//update velocity (right)
-        powerR = errorR * PID.Kp + integR*PID.Ki + velR* PID.Kd;// calc optimal power (right)
+        powerR = errorR * Constants.Drivetrain.KP + integR* Constants.Drivetrain.KI + velR* Constants.Drivetrain.KD;// calc optimal power (right)
 
         drivetrain.setPowerL(powerL);//update power (left)
         drivetrain.setPowerR(powerR);//update power (right)
