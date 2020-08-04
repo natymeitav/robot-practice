@@ -16,6 +16,7 @@ import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.Intake.Intake;
 import frc.robot.subsystems.Intake.commands.Chop;
 import frc.robot.subsystems.Intake.commands.EatCommand;
+import frc.robot.subsystems.drivetrain.commands.Distance;
 
 /**
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -56,6 +57,7 @@ public class RobotContainer {
   private void configureButtonBindings() {
     a.whileHeld(new EatCommand(intake, 0.5));
     b.whenPressed(new Chop(intake, Intake.state.OPEN));
+    x.whenPressed(new Distance(driveTrain, 100));
     
   }
 
