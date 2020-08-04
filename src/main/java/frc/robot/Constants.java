@@ -16,4 +16,10 @@ package frc.robot;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+
+    public class PID{
+        public static final int Kp = 1;
+        public static final int Ki = 1;
+        public static final int Kd = 1;
+    }
 }
