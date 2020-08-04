@@ -37,8 +37,6 @@ public class Drivetrain extends SubsystemBase {
         */
         return unitModel.toUnits(mainR.getSelectedSensorPosition());
     }
-
-
     public double getLeftPos(){
         /*
          * param: --
@@ -47,7 +45,20 @@ public class Drivetrain extends SubsystemBase {
         return unitModel.toUnits(mainL.getSelectedSensorPosition());
     }
 
-
+    public double getLeftVel(){
+        /*
+         * param: --
+         * return: left wheel's Velocity.
+         */
+        return unitModel.toVelocity(mainL.getSelectedSensorVelocity());
+    }
+    public double getRightVel(){
+        /*
+         * param: --
+         * return: right wheel's Velocity.
+         */
+        return unitModel.toVelocity(mainR.getSelectedSensorVelocity());
+    }
     @Override
     public void periodic() {
         // This method will be called once per scheduler run
